@@ -1,0 +1,288 @@
+make[2]: Entering directory `/home/user/csci2400-Computer-Systems/CU-labs/shlab-in-c++/src'
+./sdriver.pl -t trace01.txt -s ./tsh -a "-p"
+#
+# trace01.txt - Properly terminate on EOF.
+#
+./sdriver.pl -t trace02.txt -s ./tsh -a "-p"
+#
+# trace02.txt - Process builtin quit command.
+#
+./sdriver.pl -t trace03.txt -s ./tsh -a "-p"
+#
+# trace03.txt - Run a foreground job.
+#
+tsh> quit
+./sdriver.pl -t trace04.txt -s ./tsh -a "-p"
+#
+# trace04.txt - Run a background job.
+#
+tsh> ./myspin 1 &
+[1] (20376) ./myspin 1 &
+./sdriver.pl -t trace05.txt -s ./tsh -a "-p"
+#
+# trace05.txt - Process jobs builtin command.
+#
+tsh> ./myspin 2 &
+[1] (20381) ./myspin 2 &
+tsh> ./myspin 3 &
+[2] (20383) ./myspin 3 &
+tsh> jobs
+[1] (20381) Running ./myspin 2 &
+[2] (20383) Running ./myspin 3 &
+./sdriver.pl -t trace06.txt -s ./tsh -a "-p"
+#
+# trace06.txt - Forward SIGINT to foreground job.
+#
+tsh> ./myspin 4
+Job [1] (20389) terminated by signal 2
+./sdriver.pl -t trace07.txt -s ./tsh -a "-p"
+#
+# trace07.txt - Forward SIGINT only to foreground job.
+#
+tsh> ./myspin 4 &
+[1] (20394) ./myspin 4 &
+tsh> ./myspin 5
+Job [2] (20396) terminated by signal 2
+tsh> jobs
+[1] (20394) Running ./myspin 4 &
+./sdriver.pl -t trace08.txt -s ./tsh -a "-p"
+#
+# trace08.txt - Forward SIGTSTP only to foreground job.
+#
+tsh> ./myspin 4 &
+[1] (20402) ./myspin 4 &
+tsh> ./myspin 5
+Job [2] (20404) stopped by signal 20
+tsh> jobs
+[1] (20402) Running ./myspin 4 &
+[2] (20404) Stopped ./myspin 5 
+./sdriver.pl -t trace09.txt -s ./tsh -a "-p"
+#
+# trace09.txt - Process bg builtin command
+#
+tsh> ./myspin 4 &
+[1] (20410) ./myspin 4 &
+tsh> ./myspin 5
+Job [2] (20412) stopped by signal 20
+tsh> jobs
+[1] (20410) Running ./myspin 4 &
+[2] (20412) Stopped ./myspin 5 
+tsh> bg %2
+[2] (20412) ./myspin 5 
+tsh> jobs
+[1] (20410) Running ./myspin 4 &
+[2] (20412) Running ./myspin 5 
+./sdriver.pl -t trace10.txt -s ./tsh -a "-p"
+#
+# trace10.txt - Process fg builtin command. 
+#
+tsh> ./myspin 4 &
+[1] (20424) ./myspin 4 &
+tsh> fg %1
+Job [1] (20424) stopped by signal 20
+tsh> jobs
+[1] (20424) Stopped ./myspin 4 &
+tsh> fg %1
+tsh> jobs
+./sdriver.pl -t trace11.txt -s ./tsh -a "-p"
+#
+# trace11.txt - Forward SIGINT to every process in foreground process group
+#
+tsh> ./mysplit 4
+Job [1] (20433) terminated by signal 2
+tsh> /bin/ps a
+  PID TTY      STAT   TIME COMMAND
+  878 tty4     Ss+    0:00 /sbin/getty -8 38400 tty4
+  887 tty5     Ss+    0:00 /sbin/getty -8 38400 tty5
+  895 tty2     Ss+    0:00 /sbin/getty -8 38400 tty2
+  898 tty3     Ss+    0:00 /sbin/getty -8 38400 tty3
+  901 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
+ 1107 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
+ 1133 tty7     Ssl+   0:59 /usr/bin/X :0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -no
+ 1957 pts/2    Ss     0:00 bash
+ 2026 pts/3    Ss+    0:00 bash
+ 2343 pts/2    S      0:00 bash
+ 4946 pts/2    S+     0:02 emacs foo.c
+ 4951 pts/4    Ss+    0:00 /bin/bash --noediting -i
+ 5094 pts/5    Ss     0:00 bash
+ 5190 pts/5    S+     0:02 emacs csci2400-Computer-Systems/CU-labs/perflab-ImageFilter/
+ 6163 pts/6    Ss     0:00 /bin/bash --noediting -i
+20354 pts/6    S+     0:00 make
+20358 pts/6    S+     0:00 /bin/sh -c (cd src; make)
+20359 pts/6    S+     0:00 make
+20360 pts/6    S+     0:00 /bin/sh -c make tests > tshref.out 2>&1
+20361 pts/6    S+     0:00 make tests
+20429 pts/6    S+     0:00 /bin/sh -c ./sdriver.pl -t trace11.txt -s ./tsh -a "-p"
+20430 pts/6    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace11.txt -s ./tsh -a -p
+20431 pts/6    S+     0:00 ./tsh -p
+20436 pts/6    R      0:00 /bin/ps a
+./sdriver.pl -t trace12.txt -s ./tsh -a "-p"
+#
+# trace12.txt - Forward SIGTSTP to every process in foreground process group
+#
+tsh> ./mysplit 4
+Job [1] (20441) stopped by signal 20
+tsh> jobs
+[1] (20441) Stopped ./mysplit 4 
+tsh> /bin/ps a
+  PID TTY      STAT   TIME COMMAND
+  878 tty4     Ss+    0:00 /sbin/getty -8 38400 tty4
+  887 tty5     Ss+    0:00 /sbin/getty -8 38400 tty5
+  895 tty2     Ss+    0:00 /sbin/getty -8 38400 tty2
+  898 tty3     Ss+    0:00 /sbin/getty -8 38400 tty3
+  901 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
+ 1107 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
+ 1133 tty7     Ssl+   0:59 /usr/bin/X :0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -no
+ 1957 pts/2    Ss     0:00 bash
+ 2026 pts/3    Ss+    0:00 bash
+ 2343 pts/2    S      0:00 bash
+ 4946 pts/2    S+     0:02 emacs foo.c
+ 4951 pts/4    Ss+    0:00 /bin/bash --noediting -i
+ 5094 pts/5    Ss     0:00 bash
+ 5190 pts/5    S+     0:02 emacs csci2400-Computer-Systems/CU-labs/perflab-ImageFilter/
+ 6163 pts/6    Ss     0:00 /bin/bash --noediting -i
+20354 pts/6    S+     0:00 make
+20358 pts/6    S+     0:00 /bin/sh -c (cd src; make)
+20359 pts/6    S+     0:00 make
+20360 pts/6    S+     0:00 /bin/sh -c make tests > tshref.out 2>&1
+20361 pts/6    S+     0:00 make tests
+20437 pts/6    S+     0:00 /bin/sh -c ./sdriver.pl -t trace12.txt -s ./tsh -a "-p"
+20438 pts/6    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace12.txt -s ./tsh -a -p
+20439 pts/6    S+     0:00 ./tsh -p
+20441 pts/6    T      0:00 ./mysplit 4
+20442 pts/6    T      0:00 ./mysplit 4
+20449 pts/6    R      0:00 /bin/ps a
+./sdriver.pl -t trace13.txt -s ./tsh -a "-p"
+#
+# trace13.txt - Restart every stopped process in process group
+#
+tsh> ./mysplit 4
+Job [1] (20454) stopped by signal 20
+tsh> jobs
+[1] (20454) Stopped ./mysplit 4 
+tsh> /bin/ps a
+  PID TTY      STAT   TIME COMMAND
+  878 tty4     Ss+    0:00 /sbin/getty -8 38400 tty4
+  887 tty5     Ss+    0:00 /sbin/getty -8 38400 tty5
+  895 tty2     Ss+    0:00 /sbin/getty -8 38400 tty2
+  898 tty3     Ss+    0:00 /sbin/getty -8 38400 tty3
+  901 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
+ 1107 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
+ 1133 tty7     Ssl+   0:59 /usr/bin/X :0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -no
+ 1957 pts/2    Ss     0:00 bash
+ 2026 pts/3    Ss+    0:00 bash
+ 2343 pts/2    S      0:00 bash
+ 4946 pts/2    S+     0:02 emacs foo.c
+ 4951 pts/4    Ss+    0:00 /bin/bash --noediting -i
+ 5094 pts/5    Ss     0:00 bash
+ 5190 pts/5    S+     0:02 emacs csci2400-Computer-Systems/CU-labs/perflab-ImageFilter/
+ 6163 pts/6    Ss     0:00 /bin/bash --noediting -i
+20354 pts/6    S+     0:00 make
+20358 pts/6    S+     0:00 /bin/sh -c (cd src; make)
+20359 pts/6    S+     0:00 make
+20360 pts/6    S+     0:00 /bin/sh -c make tests > tshref.out 2>&1
+20361 pts/6    S+     0:00 make tests
+20450 pts/6    S+     0:00 /bin/sh -c ./sdriver.pl -t trace13.txt -s ./tsh -a "-p"
+20451 pts/6    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./tsh -a -p
+20452 pts/6    S+     0:00 ./tsh -p
+20454 pts/6    T      0:00 ./mysplit 4
+20455 pts/6    T      0:00 ./mysplit 4
+20468 pts/6    R      0:00 /bin/ps a
+tsh> fg %1
+tsh> /bin/ps a
+  PID TTY      STAT   TIME COMMAND
+  878 tty4     Ss+    0:00 /sbin/getty -8 38400 tty4
+  887 tty5     Ss+    0:00 /sbin/getty -8 38400 tty5
+  895 tty2     Ss+    0:00 /sbin/getty -8 38400 tty2
+  898 tty3     Ss+    0:00 /sbin/getty -8 38400 tty3
+  901 tty6     Ss+    0:00 /sbin/getty -8 38400 tty6
+ 1107 tty1     Ss+    0:00 /sbin/getty -8 38400 tty1
+ 1133 tty7     Ssl+   0:59 /usr/bin/X :0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -no
+ 1957 pts/2    Ss     0:00 bash
+ 2026 pts/3    Ss+    0:00 bash
+ 2343 pts/2    S      0:00 bash
+ 4946 pts/2    S+     0:02 emacs foo.c
+ 4951 pts/4    Ss+    0:00 /bin/bash --noediting -i
+ 5094 pts/5    Ss     0:00 bash
+ 5190 pts/5    S+     0:02 emacs csci2400-Computer-Systems/CU-labs/perflab-ImageFilter/
+ 6163 pts/6    Ss     0:00 /bin/bash --noediting -i
+20354 pts/6    S+     0:00 make
+20358 pts/6    S+     0:00 /bin/sh -c (cd src; make)
+20359 pts/6    S+     0:00 make
+20360 pts/6    S+     0:00 /bin/sh -c make tests > tshref.out 2>&1
+20361 pts/6    S+     0:00 make tests
+20450 pts/6    S+     0:00 /bin/sh -c ./sdriver.pl -t trace13.txt -s ./tsh -a "-p"
+20451 pts/6    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./tsh -a -p
+20452 pts/6    S+     0:00 ./tsh -p
+20475 pts/6    R      0:00 /bin/ps a
+./sdriver.pl -t trace14.txt -s ./tsh -a "-p"
+#
+# trace14.txt - Simple error handling
+#
+tsh> ./bogus
+./bogus: Command not found
+tsh> ./myspin 4 &
+[1] (20482) ./myspin 4 &
+tsh> fg
+fg command requires PID or %jobid argument
+tsh> bg
+bg command requires PID or %jobid argument
+tsh> fg a
+fg: argument must be a PID or %jobid
+tsh> bg a
+bg: argument must be a PID or %jobid
+tsh> fg 9999999
+(9999999): No such process
+tsh> bg 9999999
+(9999999): No such process
+tsh> fg %2
+%2: No such job
+tsh> fg %1
+Job [1] (20482) stopped by signal 20
+tsh> bg %2
+%2: No such job
+tsh> bg %1
+[1] (20482) ./myspin 4 &
+tsh> jobs
+[1] (20482) Running ./myspin 4 &
+./sdriver.pl -t trace15.txt -s ./tsh -a "-p"
+#
+# trace15.txt - Putting it all together
+#
+tsh> ./bogus
+./bogus: Command not found
+tsh> ./myspin 10
+Job [1] (20500) terminated by signal 2
+tsh> ./myspin 3 &
+[1] (20502) ./myspin 3 &
+tsh> ./myspin 4 &
+[2] (20504) ./myspin 4 &
+tsh> jobs
+[1] (20502) Running ./myspin 3 &
+[2] (20504) Running ./myspin 4 &
+tsh> fg %1
+Job [1] (20502) stopped by signal 20
+tsh> jobs
+[1] (20502) Stopped ./myspin 3 &
+[2] (20504) Running ./myspin 4 &
+tsh> bg %3
+%3: No such job
+tsh> bg %1
+[1] (20502) ./myspin 3 &
+tsh> jobs
+[1] (20502) Running ./myspin 3 &
+[2] (20504) Running ./myspin 4 &
+tsh> fg %1
+tsh> quit
+./sdriver.pl -t trace16.txt -s ./tsh -a "-p"
+#
+# trace16.txt - Tests whether the shell can handle SIGTSTP and SIGINT
+#     signals that come from other processes instead of the terminal.
+#
+tsh> ./mystop 2
+Job [1] (20519) stopped by signal 20
+tsh> jobs
+[1] (20519) Stopped ./mystop 2
+tsh> ./myint 2
+Job [2] (20522) terminated by signal 2
+make[2]: Leaving directory `/home/user/csci2400-Computer-Systems/CU-labs/shlab-in-c++/src'
